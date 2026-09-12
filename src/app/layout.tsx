@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Bebas_Neue, Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Bebas_Neue, Space_Grotesk } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
 const bebas = Bebas_Neue({
@@ -15,9 +16,30 @@ const grotesk = Space_Grotesk({
   display: "swap",
 });
 
-const jetbrains = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jb",
+const operatorMono = localFont({
+  src: [
+    {
+      path: "./fonts/operator-mono/OperatorMonoLig-Book.otf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./fonts/operator-mono/OperatorMonoLig-BookItalic.otf",
+      weight: "400",
+      style: "italic",
+    },
+    {
+      path: "./fonts/operator-mono/OperatorMonoLig-Medium.otf",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "./fonts/operator-mono/OperatorMonoLig-MediumItalic.otf",
+      weight: "700",
+      style: "italic",
+    },
+  ],
+  variable: "--font-operator-mono",
   display: "swap",
 });
 
@@ -64,11 +86,12 @@ export default function RootLayout({
     // suppressHydrationWarning: browser extensions (e.g. ColorZilla injects
     // cz-shortcut-listen="true") mutate <html>/<body> before React hydrates.
     // That diff is external noise — never our content — so don't warn on it.
-    <html lang="en" className="bg-void" suppressHydrationWarning>
-      <body
-        className={`${bebas.variable} ${grotesk.variable} ${jetbrains.variable} antialiased`}
-        suppressHydrationWarning
-      >
+    <html
+      lang="en"
+      className={`bg-void ${bebas.variable} ${grotesk.variable} ${operatorMono.variable}`}
+      suppressHydrationWarning
+    >
+      <body className="antialiased" suppressHydrationWarning>
         {children}
       </body>
     </html>

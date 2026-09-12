@@ -16,7 +16,7 @@
 
   --font-display: var(--font-bebas), sans-serif;
   --font-body: var(--font-grotesk), sans-serif;
-  --font-mono: var(--font-jb), monospace;
+  --font-mono: var(--font-operator-mono), monospace;
 
   --animate-marquee: marquee 40s linear infinite;
   --animate-flicker: flicker 4s linear infinite;
