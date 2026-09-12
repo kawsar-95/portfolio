@@ -1,0 +1,126 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    name: Build & push image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image_tag: ${{ steps.meta.outputs.version }}
+      image_ref: ${{ steps.image.outputs.ref }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute image metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,format=long
+            type=sha,format=short
+
+      - name: Build & push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: false
+
+      - name: Expose deployable image reference
+        id: image
+        run: echo "ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    name: Deploy to Azure VM
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout (for deploy/*)
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            deploy
+          sparse-checkout-cone-mode: false
+
+      - name: Configure SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "${{ vars.SSH_PORT || 22 }}" -H "${{ vars.SSH_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Show deploy target
+        run: |
+          echo "Deploying to ${{ vars.SSH_USER }}@${{ vars.SSH_HOST }}:${{ vars.SSH_PORT || 22 }}"
+          echo "App dir: ${{ vars.APP_DIR || '/home/nifty/projects/portfolio' }}"
+          echo "Image:   ${{ needs.build.outputs.image_ref }}"
+
+      - name: Sync compose file to server
+        run: |
+          SSH_PORT='${{ vars.SSH_PORT || 22 }}'
+          APP_DIR='${{ vars.APP_DIR || '/home/nifty/projects/portfolio' }}'
+          # Only ship the compose file; the host Caddy is managed manually
+          # (shared with Jenkins) and .env holds runtime secrets on the box.
+          scp -P "${SSH_PORT}" -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=yes \
+              deploy/docker-compose.yml \
+              "${{ vars.SSH_USER }}@${{ vars.SSH_HOST }}:${APP_DIR}/docker-compose.yml"
+
+      - name: Pull image & restart stack
+        run: |
+          IMAGE_REF='${{ needs.build.outputs.image_ref }}'
+          SSH_PORT='${{ vars.SSH_PORT || 22 }}'
+          APP_DIR='${{ vars.APP_DIR || '/home/nifty/projects/portfolio' }}'
+          ssh -p "${SSH_PORT}" -i ~/.ssh/id_ed25519 \
+              "${{ vars.SSH_USER }}@${{ vars.SSH_HOST }}" bash -se <<EOF
+          set -euo pipefail
+          cd "${APP_DIR}"
+
+          # Pin the freshly-built image tag into .env (creates file on first run).
+          touch .env
+          if grep -q '^IMAGE=' .env; then
+            sed -i "s|^IMAGE=.*|IMAGE=${IMAGE_REF}|" .env
+          else
+            echo "IMAGE=${IMAGE_REF}" >> .env
+          fi
+
+          docker compose pull
+          docker compose up -d --remove-orphans
+          docker image prune -f
+          docker compose ps
+          EOF
