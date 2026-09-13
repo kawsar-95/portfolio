@@ -60,11 +60,26 @@ export default function Contact() {
           </motion.h2>
         </motion.div>
 
-        <LogLine
-          text="Every test suite ends in a report. This one ends with you and me, deciding what ships next."
-          className="mt-6 max-w-lg"
-          startDelay={500}
-        />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="crt term-shadow relative mt-6 w-full max-w-lg overflow-hidden bg-carbon text-left"
+        >
+          <div className="flex items-center gap-2 border-b border-bone/8 bg-steel/60 px-4 py-2.5">
+            <span className="h-2 w-2 rounded-full bg-danger/80" />
+            <span className="h-2 w-2 rounded-full bg-amber/80" />
+            <span className="h-2 w-2 rounded-full bg-go/80" />
+            <span className="ml-1 font-mono text-[9px] tracking-[0.25em] text-dust">sign-off.log</span>
+          </div>
+          <div className="px-4 py-4 md:px-5">
+            <LogLine
+              text="Every test suite ends in a report. This one ends with you and me, deciding what ships next."
+              startDelay={500}
+            />
+          </div>
+        </motion.div>
 
         <motion.a
           initial={{ opacity: 0, scale: 0.94 }}

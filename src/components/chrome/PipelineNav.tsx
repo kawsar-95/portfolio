@@ -1,16 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { PIPELINE_STAGES } from "@/lib/data";
 import { useLenis } from "./SmoothScroll";
-import MissionClock from "./MissionClock";
 
 /**
  * The pipeline rail — every QA release visualized on the left edge.
  * Stages light up as the visitor's scroll executes the site.
  */
-export default function PipelineNav({ bootedAt }: { bootedAt: number | null }) {
+export default function PipelineNav() {
   const lenis = useLenis();
   const [active, setActive] = useState<string>("spec");
   const [progress, setProgress] = useState(0);
@@ -65,66 +63,7 @@ export default function PipelineNav({ bootedAt }: { bootedAt: number | null }) {
         >
           QA<span className="text-amber">://</span>RUN
         </button>
-
-        <div className="hidden items-center gap-3 md:flex">
-          <AnimatePresence mode="wait">
-            <motion.span
-              key={active}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.3 }}
-              className="font-mono text-[10px] tracking-[0.35em] text-bone/70"
-            >
-              {activeStage?.act} — {activeStage?.label}
-            </motion.span>
-          </AnimatePresence>
-        </div>
-
-        <MissionClock bootedAt={bootedAt} />
       </header>
-
-      {/* ---- Left rail (desktop) ---- */}
-      <nav className="fixed left-6 top-1/2 z-[100] hidden -translate-y-1/2 flex-col gap-0 lg:flex">
-        {PIPELINE_STAGES.map((stage, i) => {
-          const reached = i <= activeIndex;
-          const isActive = stage.id === active;
-          return (
-            <button
-              key={stage.id}
-              onClick={() => goTo(stage.id)}
-              data-cursor="GO"
-              className="group flex items-center gap-3 py-2.5 text-left"
-            >
-              <span
-                className={`font-mono text-[8px] tracking-[0.2em] transition-colors duration-300 ${
-                  isActive ? "text-amber" : reached ? "text-go/70" : "text-faint"
-                }`}
-              >
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <span
-                className={`relative block h-px transition-all duration-500 ${
-                  isActive
-                    ? "w-10 bg-amber"
-                    : reached
-                      ? "w-5 bg-go/60 group-hover:w-8 group-hover:bg-amber/60"
-                      : "w-5 bg-faint group-hover:w-8"
-                }`}
-              />
-              <span
-                className={`font-mono text-[9px] tracking-[0.3em] transition-all duration-300 ${
-                  isActive
-                    ? "translate-x-0 text-amber opacity-100"
-                    : "-translate-x-1 text-dust opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
-                }`}
-              >
-                {stage.label}
-              </span>
-            </button>
-          );
-        })}
-      </nav>
 
       {/* ---- Bottom progress (mobile) ---- */}
       <div className="fixed inset-x-0 bottom-0 z-[100] bg-gradient-to-t from-void via-void/85 to-transparent pt-6 lg:hidden">

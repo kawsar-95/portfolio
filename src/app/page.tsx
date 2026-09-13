@@ -31,7 +31,7 @@ export default function Pipeline() {
 
       {!booted && <Preloader onComplete={() => setBootedAt(Date.now())} />}
 
-      <PipelineNav bootedAt={bootedAt} />
+      <PipelineNav />
 
       <main>
         <Hero booted={booted} />

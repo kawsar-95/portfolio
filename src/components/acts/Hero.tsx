@@ -42,17 +42,7 @@ export default function Hero({ booted }: { booted: boolean }) {
 
       {/* frame content */}
       <div className="relative z-10 flex h-full flex-col justify-between px-5 pb-24 pt-24 md:px-12 lg:px-24">
-        <div className="boot-fade flex items-center gap-4" style={{ transitionDelay: "0.15s" }}>
-          <span className="kicker text-amber">ACT I</span>
-          <span className="h-px w-14 bg-faint" />
-          <span className="kicker">SPEC</span>
-        </div>
-
         <div className="pointer-events-none select-none">
-          <p className="boot-fade kicker mb-5 md:mb-7" style={{ transitionDelay: "0.3s" }}>
-            {IDENTITY.location} — {IDENTITY.coordinates}
-          </p>
-
           <h1 className="display-xl text-[clamp(4rem,14.5vw,13.5rem)]">
             <span className="line-mask">
               <span className="line-inner text-bone" style={{ transitionDelay: "0.4s" }}>
