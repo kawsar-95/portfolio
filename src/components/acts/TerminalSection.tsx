@@ -23,6 +23,7 @@ const HELP = [
   L("out", "  whoami        who is running this suite"),
   L("out", "  ls            list the case studies"),
   L("out", "  skills        inspect the test manifest"),
+  L("out", "  books         the QA reading list behind this build"),
   L("out", "  experience    QA career history"),
   L("out", "  projects      case-study registry"),
   L("out", "  run-tests     execute the regression suite"),
@@ -188,6 +189,17 @@ export default function TerminalSection({ bootedAt }: { bootedAt: number | null 
             )
           ),
           L("dim", "  full manifest in ACT III — scroll up.")
+        );
+        break;
+      case "books":
+        push(
+          L("amber", "REQUIRED READING — QA BOOKSHELF:"),
+          L("out", "  Agile Testing — Lisa Crispin & Janet Gregory"),
+          L("out", "  More Agile Testing — Janet Gregory & Lisa Crispin"),
+          L("dim", "  gist: whole-team approach · testing quadrants · test"),
+          L("dim", "  automation pyramid · exploratory testing · atdd/bdd ·"),
+          L("dim", "  risk-based testing · t-shaped skill set · zero bug tolerance"),
+          L("dim", "  the doctrine behind every suite in this build.")
         );
         break;
       case "sudo":

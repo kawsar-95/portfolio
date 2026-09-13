@@ -34,7 +34,7 @@ export default function Skills() {
               ~/kawsar/test-manifest.yml
             </span>
             <span className="font-mono text-[10px] tracking-[0.2em] text-faint">
-              7 SUITES
+              8 SUITES
             </span>
           </div>
 
@@ -89,7 +89,7 @@ export default function Skills() {
               className="mt-8 border-t border-bone/8 pt-6 font-mono text-xs leading-loose md:text-sm"
             >
               <div className="text-dust">
-                [7/7] RUNNING final_checks --zero-defects
+                [8/8] RUNNING final_checks --zero-defects
               </div>
               <div className="text-go">
                 ✓ All suites green — <span className="text-bone">kawsar/sqa-engineer:latest</span>

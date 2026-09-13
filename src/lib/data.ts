@@ -85,6 +85,19 @@ export const SKILL_LAYERS: SkillLayer[] = [
     comment: "how a QA team actually ships",
     items: ["Scrum", "Kanban"],
   },
+  {
+    directive: "APPLY --doctrine=agile-testing",
+    comment: "Crispin & Gregory — the whole-team playbook",
+    items: [
+      "Whole-Team Approach",
+      "Testing Quadrants",
+      "Test Automation Pyramid",
+      "Exploratory Testing",
+      "ATDD / BDD",
+      "Risk-Based Testing",
+      "T-Shaped Skill Set",
+    ],
+  },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -336,6 +349,7 @@ export const TERMINAL_COMMANDS = [
   "whoami",
   "ls",
   "skills",
+  "books",
   "experience",
   "projects",
   "run-tests",
