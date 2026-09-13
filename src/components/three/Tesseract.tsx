@@ -76,12 +76,14 @@ function Hypercube({
   opacity,
   speed,
   offset,
+  blending,
 }: {
   scale: number;
   color: string;
   opacity: number;
   speed: number;
   offset: number;
+  blending: THREE.Blending;
 }) {
   const lineRef = useRef<THREE.LineSegments>(null);
   const nodeRef = useRef<THREE.Points>(null);
@@ -140,7 +142,7 @@ function Hypercube({
           color={color}
           transparent
           opacity={opacity}
-          blending={THREE.AdditiveBlending}
+          blending={blending}
           depthWrite={false}
         />
       </lineSegments>
@@ -153,7 +155,7 @@ function Hypercube({
           sizeAttenuation
           transparent
           opacity={Math.min(1, opacity + 0.35)}
-          blending={THREE.AdditiveBlending}
+          blending={blending}
           depthWrite={false}
         />
       </points>
@@ -171,7 +173,29 @@ function Rig({ children }: { children: React.ReactNode }) {
   return <group ref={group}>{children}</group>;
 }
 
-export default function Tesseract() {
+/**
+ * Dark mode: pale/amber lines additively glowing out of the void.
+ * Light mode: the same hypercube re-inked as dark strokes on paper —
+ * additive blending would just wash out to white, so it switches to
+ * normal blending with darker, higher-opacity colors instead.
+ */
+const THEME_CONFIG = {
+  dark: {
+    showStars: true,
+    outer: { color: "#e8e6e1", opacity: 0.13 },
+    inner: { color: "#e8a33d", opacity: 0.55 },
+    blending: THREE.AdditiveBlending,
+  },
+  light: {
+    showStars: false,
+    outer: { color: "#1c1e22", opacity: 0.32 },
+    inner: { color: "#a8641f", opacity: 0.92 },
+    blending: THREE.NormalBlending,
+  },
+} as const;
+
+export default function Tesseract({ theme = "dark" }: { theme?: "dark" | "light" }) {
+  const cfg = THEME_CONFIG[theme];
   return (
     <Canvas
       camera={{ position: [0, 0, 7.5], fov: 50 }}
@@ -179,12 +203,14 @@ export default function Tesseract() {
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       style={{ background: "transparent" }}
     >
-      <Stars radius={60} depth={40} count={2600} factor={3.2} saturation={0} fade speed={0.6} />
+      {cfg.showStars && (
+        <Stars radius={60} depth={40} count={2600} factor={3.2} saturation={0} fade speed={0.6} />
+      )}
       <Rig>
-        {/* outer cage — pale, slow, immense */}
-        <Hypercube scale={2.9} color="#e8e6e1" opacity={0.13} speed={0.16} offset={0} />
-        {/* inner core — amber, alive */}
-        <Hypercube scale={1.7} color="#e8a33d" opacity={0.55} speed={0.34} offset={2.1} />
+        {/* outer cage — slow, immense */}
+        <Hypercube scale={2.9} speed={0.16} offset={0} blending={cfg.blending} {...cfg.outer} />
+        {/* inner core — alive */}
+        <Hypercube scale={1.7} speed={0.34} offset={2.1} blending={cfg.blending} {...cfg.inner} />
       </Rig>
     </Canvas>
   );

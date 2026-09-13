@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Sun, Moon } from "lucide-react";
 import { PIPELINE_STAGES } from "@/lib/data";
 import { useLenis } from "./SmoothScroll";
+import { useTheme } from "@/components/ThemeProvider";
 
 /**
  * The pipeline rail — every QA release visualized on the left edge.
@@ -10,6 +12,7 @@ import { useLenis } from "./SmoothScroll";
  */
 export default function PipelineNav() {
   const lenis = useLenis();
+  const { theme, toggleTheme } = useTheme();
   const [active, setActive] = useState<string>("spec");
   const [progress, setProgress] = useState(0);
 
@@ -62,6 +65,15 @@ export default function PipelineNav() {
           className="font-mono text-xs font-bold tracking-[0.3em] text-bone"
         >
           QA<span className="text-amber">://</span>RUN
+        </button>
+
+        <button
+          onClick={toggleTheme}
+          data-cursor="THEME"
+          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          className="flex h-7 w-7 items-center justify-center border border-bone/15 text-bone/70 transition-colors hover:border-amber/50 hover:text-amber"
+        >
+          {theme === "dark" ? <Sun size={13} /> : <Moon size={13} />}
         </button>
       </header>
 

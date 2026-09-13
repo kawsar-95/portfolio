@@ -275,7 +275,7 @@ export default function TerminalSection({ bootedAt }: { bootedAt: number | null 
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-        className="crt term-shadow relative mx-auto max-w-4xl overflow-hidden bg-carbon"
+        className="crt term-shadow terminal-shell relative mx-auto max-w-4xl overflow-hidden bg-carbon"
         onClick={() => inputRef.current?.focus()}
       >
         {/* title bar */}

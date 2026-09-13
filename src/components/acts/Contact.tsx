@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import LogLine from "@/components/LogLine";
 import { IDENTITY } from "@/lib/data";
+import { useTheme } from "@/components/ThemeProvider";
 
 const Gargantua = dynamic(() => import("@/components/three/Gargantua"), {
   ssr: false,
@@ -21,6 +22,7 @@ const CHANNELS = [
  * Every test run ends here: something real, verified, reachable.
  */
 export default function Contact() {
+  const { theme } = useTheme();
   return (
     <section
       id="signoff"
@@ -28,9 +30,9 @@ export default function Contact() {
     >
       {/* Gargantua hangs behind everything */}
       <div className="absolute inset-0">
-        <Gargantua />
+        <Gargantua theme={theme} />
       </div>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_25%,rgba(6,6,7,0.8)_100%)]" />
+      <div className="contact-vignette pointer-events-none absolute inset-0" />
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-5 py-36 text-center">
         <motion.div
@@ -65,7 +67,7 @@ export default function Contact() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="crt term-shadow relative mt-6 w-full max-w-lg overflow-hidden bg-carbon text-left"
+          className="crt term-shadow terminal-shell relative mt-6 w-full max-w-lg overflow-hidden bg-carbon text-left"
         >
           <div className="flex items-center gap-2 border-b border-bone/8 bg-steel/60 px-4 py-2.5">
             <span className="h-2 w-2 rounded-full bg-danger/80" />

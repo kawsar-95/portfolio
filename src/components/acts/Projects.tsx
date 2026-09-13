@@ -4,9 +4,8 @@ import { motion } from "framer-motion";
 import SectionTitle from "@/components/SectionTitle";
 import StatusDot from "@/components/StatusDot";
 import ToolIcon, { findToolMentions } from "@/components/ToolIcon";
-import SecurityReportCard from "@/components/devsecops/SecurityReportCard";
 import CoverageRing from "@/components/devsecops/CoverageRing";
-import { CASE_STUDIES, SECURITY_REVIEW, type Artifact } from "@/lib/data";
+import { CASE_STUDIES, type Artifact } from "@/lib/data";
 
 function StatusBadge({ status }: { status: Artifact["status"] }) {
   if (status === "LIVE")
@@ -114,7 +113,12 @@ function BigCard({ a, i, featured = false }: { a: Artifact; i: number; featured?
 
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="display-xl text-3xl text-bone md:text-4xl">{a.name}</h3>
+          <h3
+            className="display-xl blur-md text-3xl text-bone md:text-4xl"
+            aria-label="confidential case study"
+          >
+            {a.name}
+          </h3>
           <div className="mt-1 font-mono text-[10px] tracking-[0.3em] text-amber">
             {a.kind}
           </div>
@@ -207,23 +211,6 @@ export default function Projects() {
         {live.map((a, i) => (
           <BigCard key={a.id} a={a} i={i} featured />
         ))}
-
-        <motion.div
-          initial={{ opacity: 0, y: 36 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="md:col-span-2"
-        >
-          <div className="mb-3 font-mono text-[9px] tracking-[0.25em] text-dust">
-            ↳ COMPLIANCE DETAIL — CONNEXPAY
-          </div>
-          <SecurityReportCard
-            tool={SECURITY_REVIEW.tool}
-            scannedSurfaces={SECURITY_REVIEW.scannedSurfaces}
-            headline={SECURITY_REVIEW.headline}
-          />
-        </motion.div>
 
         {other.map((a, i) => (
           <BigCard key={a.id} a={a} i={i} />

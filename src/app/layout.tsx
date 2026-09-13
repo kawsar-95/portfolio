@@ -1,7 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import { Bebas_Neue, Ubuntu } from "next/font/google";
 import localFont from "next/font/local";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { THEME_STORAGE_KEY } from "@/lib/theme-constants";
 import "./globals.css";
+
+// Runs before hydration so the correct theme applies before first paint —
+// no flash of the wrong theme. Kept in sync with ThemeProvider.tsx.
+const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem(${JSON.stringify(
+  THEME_STORAGE_KEY
+)});if(t!=='light'&&t!=='dark'){t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`;
 
 const bebas = Bebas_Neue({
   weight: "400",
@@ -70,7 +78,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#060607",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f5f4ef" },
+    { media: "(prefers-color-scheme: dark)", color: "#060607" },
+  ],
   width: "device-width",
   initialScale: 1,
   // cinematic frame: no pinch zoom — also stops iOS Safari from
@@ -93,7 +104,8 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="antialiased" suppressHydrationWarning>
-        {children}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

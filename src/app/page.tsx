@@ -4,6 +4,7 @@ import { useState } from "react";
 import SmoothScroll from "@/components/chrome/SmoothScroll";
 import Cursor from "@/components/chrome/Cursor";
 import PipelineNav from "@/components/chrome/PipelineNav";
+import SocialRail from "@/components/chrome/SocialRail";
 import Preloader from "@/components/Preloader";
 import Marquee from "@/components/Marquee";
 import Interlude from "@/components/Interlude";
@@ -32,6 +33,7 @@ export default function Pipeline() {
       {!booted && <Preloader onComplete={() => setBootedAt(Date.now())} />}
 
       <PipelineNav />
+      <SocialRail />
 
       <main>
         <Hero booted={booted} />

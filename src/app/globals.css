@@ -5,8 +5,8 @@
   --color-carbon: #0c0d10;
   --color-steel: #14161a;
   --color-bone: #e8e6e1;
-  --color-dust: #8a8578;
-  --color-faint: #4a473f;
+  --color-dust: #9f9a8c;
+  --color-faint: #615d50;
   --color-amber: #e8a33d;
   --color-signal: #ffb454;
   --color-ember: #c75b26;
@@ -50,6 +50,55 @@
     0%, 100% { opacity: 0.55; }
     50% { opacity: 1; }
   }
+}
+
+/* ---------- Light theme ---------- */
+/* Toggled via [data-theme] on <html> — see ThemeProvider.tsx. Every
+   Tailwind utility built from a --color-* token (including opacity
+   modifiers like bg-bone/5, which Tailwind v4 compiles to color-mix()
+   against the variable) picks these up automatically; only the
+   hardcoded literal colors below need their own light-mode rules. */
+[data-theme="light"] {
+  --color-void: #f5f3ec;
+  --color-carbon: #ece9df;
+  --color-steel: #eae7dc;
+  --color-bone: #17181b;
+  --color-dust: #6b6558;
+  --color-faint: #d8d3c3;
+  --color-amber: #9c5a1a;
+  --color-signal: #c17a2e;
+  --color-ember: #8a3f18;
+  --color-go: #0e8a5f;
+  --color-invert: #0e7490;
+  --color-danger: #dc2626;
+}
+
+/* A dark "island" for terminal-styled chrome — real terminals stay dark
+   regardless of the surrounding page theme. Pins descendants back to the
+   dark palette even when an ancestor has [data-theme="light"]. */
+.terminal-shell {
+  --color-void: #060607;
+  --color-carbon: #0c0d10;
+  --color-steel: #14161a;
+  --color-bone: #e8e6e1;
+  --color-dust: #9f9a8c;
+  --color-faint: #615d50;
+  --color-amber: #e8a33d;
+  --color-signal: #ffb454;
+  --color-ember: #c75b26;
+  --color-go: #34d399;
+  --color-invert: #67e8f9;
+  --color-danger: #ef4444;
+}
+
+/* Hero title-text shadow: a dark halo on dark mode, a light halo on
+   light mode — same purpose (legibility over the busy WebGL scene),
+   opposite direction. */
+:root {
+  --hero-text-shadow: 0 2px 18px rgba(0, 0, 0, 0.9), 0 1px 4px rgba(0, 0, 0, 0.95);
+}
+[data-theme="light"] {
+  --hero-text-shadow: 0 2px 18px rgba(245, 243, 236, 0.9), 0 1px 4px rgba(245, 243, 236, 0.95);
 }
 
 html {
@@ -122,6 +171,42 @@ body {
     rgba(0, 0, 0, 0.42) 100%
   );
 }
+[data-theme="light"] .vignette {
+  /* a heavy black vignette reads as dirty corners on a light page —
+     soften it way down rather than dropping it entirely */
+  background: radial-gradient(
+    ellipse at center,
+    transparent 55%,
+    rgba(23, 24, 27, 0.1) 100%
+  );
+}
+
+/* Hero/Contact: fades the WebGL scene into the page background at the
+   edges so text stays legible — tints toward whatever --color-void
+   currently is, not a fixed color, so it works in both themes. */
+.hero-vignette {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(6, 6, 7, 0.32) 0%,
+    rgba(6, 6, 7, 0.5) 45%,
+    rgba(6, 6, 7, 0.85) 100%
+  );
+}
+[data-theme="light"] .hero-vignette {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(245, 243, 236, 0.32) 0%,
+    rgba(245, 243, 236, 0.55) 45%,
+    rgba(245, 243, 236, 0.9) 100%
+  );
+}
+
+.contact-vignette {
+  background: radial-gradient(ellipse at center, transparent 25%, rgba(6, 6, 7, 0.8) 100%);
+}
+[data-theme="light"] .contact-vignette {
+  background: radial-gradient(ellipse at center, transparent 25%, rgba(245, 243, 236, 0.85) 100%);
+}
 
 /* ---------- Type utilities ---------- */
 
@@ -144,16 +229,27 @@ body {
   color: transparent;
   -webkit-text-stroke: 1px rgba(232, 230, 225, 0.34);
 }
+[data-theme="light"] .text-outline {
+  -webkit-text-stroke-color: rgba(23, 24, 27, 0.4);
+}
 
 .text-outline-amber {
   color: transparent;
   -webkit-text-stroke: 1px rgba(232, 163, 61, 0.55);
+}
+[data-theme="light"] .text-outline-amber {
+  -webkit-text-stroke-color: rgba(156, 90, 26, 0.6);
 }
 
 .glow-amber {
   text-shadow:
     0 0 18px rgba(232, 163, 61, 0.35),
     0 0 60px rgba(232, 163, 61, 0.12);
+}
+[data-theme="light"] .glow-amber {
+  /* a neon bloom only reads against a dark backdrop — on paper, the
+     accent color alone carries it */
+  text-shadow: none;
 }
 
 /* ---------- Letterbox ---------- */
@@ -226,8 +322,9 @@ body {
 
 .artifact {
   position: relative;
-  background: linear-gradient(160deg, rgba(20, 22, 26, 0.85), rgba(10, 10, 12, 0.9));
-  border: 1px solid rgba(232, 230, 225, 0.08);
+  background: linear-gradient(160deg, rgba(22, 24, 28, 0.94), rgba(10, 10, 12, 0.97));
+  border: 1px solid rgba(232, 230, 225, 0.14);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
   transition: border-color 0.4s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .artifact:hover {
@@ -250,6 +347,22 @@ body {
   opacity: 1;
 }
 
+[data-theme="light"] .artifact {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(236, 233, 223, 0.96));
+  border-color: rgba(23, 24, 27, 0.12);
+  box-shadow: 0 12px 32px rgba(23, 24, 27, 0.08);
+}
+[data-theme="light"] .artifact:hover {
+  border-color: rgba(156, 90, 26, 0.45);
+}
+[data-theme="light"] .artifact::before {
+  background: radial-gradient(
+    600px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(156, 90, 26, 0.1),
+    transparent 45%
+  );
+}
+
 /* LIVE systems glow green instead of amber — production has its own color. */
 .artifact-live:hover {
   border-color: rgba(52, 211, 153, 0.45);
@@ -258,6 +371,16 @@ body {
   background: radial-gradient(
     600px circle at var(--mx, 50%) var(--my, 50%),
     rgba(52, 211, 153, 0.09),
+    transparent 45%
+  );
+}
+[data-theme="light"] .artifact-live:hover {
+  border-color: rgba(14, 138, 95, 0.5);
+}
+[data-theme="light"] .artifact-live::before {
+  background: radial-gradient(
+    600px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(14, 138, 95, 0.12),
     transparent 45%
   );
 }
@@ -327,6 +450,15 @@ body {
 .badge-value {
   padding: 0.25rem 0.5rem;
   border-left: 1px solid rgba(232, 230, 225, 0.1);
+}
+[data-theme="light"] .badge {
+  border-color: rgba(23, 24, 27, 0.15);
+}
+[data-theme="light"] .badge-label {
+  background: rgba(23, 24, 27, 0.05);
+}
+[data-theme="light"] .badge-value {
+  border-left-color: rgba(23, 24, 27, 0.15);
 }
 
 /* ---------- Reduced motion ---------- */

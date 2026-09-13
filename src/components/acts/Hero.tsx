@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { IDENTITY } from "@/lib/data";
+import { useTheme } from "@/components/ThemeProvider";
 
 const Tesseract = dynamic(() => import("@/components/three/Tesseract"), {
   ssr: false,
@@ -15,6 +16,7 @@ const Tesseract = dynamic(() => import("@/components/three/Tesseract"), {
  * Reveals are CSS-driven off the `booted` class — zero hydration risk.
  */
 export default function Hero({ booted }: { booted: boolean }) {
+  const { theme } = useTheme();
   const [letterboxed, setLetterboxed] = useState(true);
 
   useEffect(() => {
@@ -36,12 +38,15 @@ export default function Hero({ booted }: { booted: boolean }) {
     >
       {/* the fourth dimension, rendered */}
       <div className="absolute inset-0 opacity-90">
-        <Tesseract />
+        <Tesseract theme={theme} />
       </div>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(6,6,7,0.72)_100%)]" />
+      <div className="hero-vignette pointer-events-none absolute inset-0" />
 
       {/* frame content */}
-      <div className="relative z-10 flex h-full flex-col justify-between px-5 pb-24 pt-24 md:px-12 lg:px-24">
+      <div
+        className="relative z-10 flex h-full flex-col justify-between px-5 pb-24 pt-24 md:px-12 lg:px-24"
+        style={{ textShadow: "var(--hero-text-shadow)" }}
+      >
         <div className="pointer-events-none select-none">
           <h1 className="display-xl text-[clamp(4rem,14.5vw,13.5rem)]">
             <span className="line-mask">
@@ -73,7 +78,7 @@ export default function Hero({ booted }: { booted: boolean }) {
         <div className="boot-fade flex items-end justify-between" style={{ transitionDelay: "1.15s" }}>
           <div className="font-mono text-[9px] leading-relaxed tracking-[0.2em] text-dust md:text-[10px]">
             <div>spec: QA-0001 — status: PASSED</div>
-            <div className="text-faint">Author: kawsar · {IDENTITY.email}</div>
+            <div>Author: kawsar · {IDENTITY.email}</div>
           </div>
           <div className="flex flex-col items-center gap-2">
             <span className="kicker animate-pulse-soft">SCROLL TO EXECUTE</span>
