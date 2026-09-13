@@ -2,13 +2,18 @@
 
 import { motion } from "framer-motion";
 import SectionTitle from "@/components/SectionTitle";
+import StatusDot from "@/components/StatusDot";
+import ToolIcon, { slugifyTool } from "@/components/ToolIcon";
 import { MISSIONS, type Mission } from "@/lib/data";
 
-const TONE_STYLES: Record<Mission["envTone"], { text: string; dot: string; border: string }> = {
-  prod: { text: "text-go", dot: "bg-go", border: "border-go/40" },
-  stage: { text: "text-amber", dot: "bg-amber", border: "border-amber/40" },
-  cert: { text: "text-invert", dot: "bg-invert", border: "border-invert/40" },
-  dev: { text: "text-dust", dot: "bg-dust", border: "border-dust/40" },
+const TONE_STYLES: Record<
+  Mission["envTone"],
+  { text: string; dot: "go" | "amber" | "invert" | "dust"; border: string }
+> = {
+  prod: { text: "text-go", dot: "go", border: "border-go/40" },
+  stage: { text: "text-amber", dot: "amber", border: "border-amber/40" },
+  cert: { text: "text-invert", dot: "invert", border: "border-invert/40" },
+  dev: { text: "text-dust", dot: "dust", border: "border-dust/40" },
 };
 
 /**
@@ -48,8 +53,10 @@ export default function Experience() {
                 className="relative pl-10 md:pl-16"
               >
                 {/* node */}
-                <span
-                  className={`absolute left-0 top-2 h-[15px] w-[15px] rounded-full border-2 border-void ${tone.dot} ${m.envTone === "prod" ? "animate-pulse-soft" : ""}`}
+                <StatusDot
+                  tone={tone.dot}
+                  pulse={m.envTone === "prod"}
+                  className="absolute left-0 top-2 !h-[15px] !w-[15px] border-2 border-void"
                 />
 
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -86,6 +93,23 @@ export default function Experience() {
                       </li>
                     ))}
                   </ul>
+                )}
+
+                {m.tools && m.tools.length > 0 && (
+                  <div className="mt-5 flex flex-wrap gap-2 pl-5">
+                    {m.tools.map((t) => {
+                      const slug = slugifyTool(t);
+                      return (
+                        <span
+                          key={t}
+                          className="flex items-center gap-1.5 border border-bone/10 px-2 py-0.5 font-mono text-[9px] tracking-wider text-dust"
+                        >
+                          {slug && <ToolIcon tool={slug} size={11} />}
+                          {t}
+                        </span>
+                      );
+                    })}
+                  </div>
                 )}
               </motion.article>
             );

@@ -99,6 +99,7 @@ export interface Mission {
   period: string;
   brief: string;
   log: string[];
+  tools?: string[];
 }
 
 export const MISSIONS: Mission[] = [
@@ -116,6 +117,7 @@ export const MISSIONS: Mission[] = [
       "Automates mobile flows for the Flutter app with Maestro, and API workflows with Postman",
       "Maintains multi-repo GitHub Actions pipelines — regression and smoke suites run on every build",
     ],
+    tools: ["Maestro", "Postman", "GitHub Actions"],
   },
   {
     env: "STAGING",
@@ -131,6 +133,7 @@ export const MISSIONS: Mission[] = [
       "Partnered with developers and PMs to catch defects early and lift release quality",
       "Documented bugs in detail and pushed process improvements for smoother releases",
     ],
+    tools: ["Playwright", "Postman", "GraphQL"],
   },
   {
     env: "STAGING",
@@ -161,6 +164,7 @@ export const MISSIONS: Mission[] = [
       "Shortened release cycles by introducing automation into regression and smoke testing",
       "Partnered with developers on test-strategy design for consistently high-quality releases",
     ],
+    tools: ["Cypress", "Playwright", "GitHub Actions"],
   },
   {
     env: "SANDBOX",
@@ -171,6 +175,7 @@ export const MISSIONS: Mission[] = [
     brief:
       "First tests, first bug reports — manual and automated testing, defects logged in JIRA, early API automation in Postman.",
     log: [],
+    tools: ["JIRA", "Postman"],
   },
   {
     env: "ACADEMY",
@@ -199,6 +204,7 @@ export interface Artifact {
   url?: string;
   repo?: string;
   links?: { label: string; url: string }[];
+  coveragePct?: number;
 }
 
 export const CASE_STUDIES: Artifact[] = [
@@ -261,6 +267,55 @@ export const CASE_STUDIES: Artifact[] = [
 ];
 
 /* ------------------------------------------------------------------ */
+/*  RELEASE GATE — the checks a build actually passes through          */
+/* ------------------------------------------------------------------ */
+
+export type GateStatus = "pass" | "fail" | "running" | "pending" | "warn";
+
+export interface GateStep {
+  id: string;
+  label: string;
+  detail?: string;
+  status: GateStatus;
+}
+
+export const PIPELINE_GATE_STEPS: GateStep[] = [
+  { id: "lint", label: "LINT", detail: "static checks", status: "pass" },
+  { id: "unit", label: "UNIT", detail: "component specs", status: "pass" },
+  { id: "integration", label: "INTEGRATION", detail: "UI automation — 214 cases", status: "pass" },
+  { id: "api", label: "API CONTRACT", detail: "38 endpoints", status: "pass" },
+  { id: "security", label: "SECURITY REVIEW", detail: "compliance + contract checks", status: "pass" },
+  { id: "build", label: "BUILD", detail: "artifact packaged", status: "pass" },
+  { id: "signoff", label: "UAT SIGN-OFF", detail: "PM + QA approval", status: "pass" },
+];
+
+/* ------------------------------------------------------------------ */
+/*  SECURITY REVIEW — honest framing, not a fictitious scan report     */
+/*  No dedicated SAST/DAST tooling in the workflow today — this        */
+/*  reflects manual + contract-level checks actually performed.        */
+/* ------------------------------------------------------------------ */
+
+export type Severity = "critical" | "high" | "medium" | "low";
+
+export interface SecurityFinding {
+  id: string;
+  severity: Severity;
+  area: string;
+  summary: string;
+  status: "resolved" | "monitored" | "in-process";
+}
+
+export const SECURITY_REVIEW = {
+  tool: "Manual review + automated API contract checks — no dedicated SAST/DAST tool in current workflow",
+  scannedSurfaces: [
+    "Payment / compliance flows (ConnexPay)",
+    "API contracts (Postman, GraphQL)",
+    "Auth & session flows",
+  ],
+  headline: "COMPLIANCE PATHS — MANUALLY VERIFIED EVERY RELEASE",
+};
+
+/* ------------------------------------------------------------------ */
 /*  Terminal content                                                   */
 /* ------------------------------------------------------------------ */
 
@@ -284,6 +339,7 @@ export const TERMINAL_COMMANDS = [
   "experience",
   "projects",
   "run-tests",
+  "pipeline",
   "uptime",
   "contact",
   "interstellar",

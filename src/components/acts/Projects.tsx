@@ -2,33 +2,37 @@
 
 import { motion } from "framer-motion";
 import SectionTitle from "@/components/SectionTitle";
-import { CASE_STUDIES, type Artifact } from "@/lib/data";
+import StatusDot from "@/components/StatusDot";
+import ToolIcon, { findToolMentions } from "@/components/ToolIcon";
+import SecurityReportCard from "@/components/devsecops/SecurityReportCard";
+import CoverageRing from "@/components/devsecops/CoverageRing";
+import { CASE_STUDIES, SECURITY_REVIEW, type Artifact } from "@/lib/data";
 
 function StatusBadge({ status }: { status: Artifact["status"] }) {
   if (status === "LIVE")
     return (
       <span className="flex items-center gap-1.5 font-mono text-[9px] tracking-[0.25em] text-go">
-        <span className="h-1.5 w-1.5 animate-pulse-soft rounded-full bg-go" />
+        <StatusDot tone="go" pulse />
         LIVE
       </span>
     );
   if (status === "REDEPLOYING")
     return (
       <span className="flex items-center gap-1.5 font-mono text-[9px] tracking-[0.25em] text-amber">
-        <span className="h-1.5 w-1.5 animate-pulse-soft rounded-full bg-amber" />
+        <StatusDot tone="amber" pulse />
         REDEPLOYING
       </span>
     );
   if (status === "DEPLOYED")
     return (
       <span className="flex items-center gap-1.5 font-mono text-[9px] tracking-[0.25em] text-amber">
-        <span className="h-1.5 w-1.5 rounded-full bg-amber" />
+        <StatusDot tone="amber" />
         DEPLOYED
       </span>
     );
   return (
     <span className="flex items-center gap-1.5 font-mono text-[9px] tracking-[0.25em] text-dust">
-      <span className="h-1.5 w-1.5 rounded-full bg-dust" />
+      <StatusDot tone="dust" />
       ARCHIVED
     </span>
   );
@@ -108,14 +112,28 @@ function BigCard({ a, i, featured = false }: { a: Artifact; i: number; featured?
         <StatusBadge status={a.status} />
       </div>
 
-      <h3 className="display-xl text-3xl text-bone md:text-4xl">{a.name}</h3>
-      <div className="mt-1 font-mono text-[10px] tracking-[0.3em] text-amber">
-        {a.kind}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h3 className="display-xl text-3xl text-bone md:text-4xl">{a.name}</h3>
+          <div className="mt-1 font-mono text-[10px] tracking-[0.3em] text-amber">
+            {a.kind}
+          </div>
+        </div>
+        {a.coveragePct !== undefined && (
+          <CoverageRing
+            value={a.coveragePct}
+            label="COVERAGE"
+            size={56}
+            strokeWidth={2.5}
+            tone={featured ? "go" : "amber"}
+            className="shrink-0"
+          />
+        )}
       </div>
 
       {featured && (
         <div className="mt-4 flex items-center gap-2 border-y border-go/15 bg-go/5 px-3 py-2 font-mono text-[9px] tracking-[0.25em] text-go">
-          <span className="h-1.5 w-1.5 animate-pulse-soft rounded-full bg-go" />
+          <StatusDot tone="go" pulse />
           STILL LIVE IN PRODUCTION
         </div>
       )}
@@ -134,14 +152,18 @@ function BigCard({ a, i, featured = false }: { a: Artifact; i: number; featured?
       </ul>
 
       <div className="mt-5 flex flex-wrap gap-1.5">
-        {a.stack.map((s) => (
-          <span
-            key={s}
-            className="bg-bone/5 px-2 py-0.5 font-mono text-[9px] tracking-wider text-dust"
-          >
-            {s}
-          </span>
-        ))}
+        {a.stack.map((s) => {
+          const [slug] = findToolMentions(s);
+          return (
+            <span
+              key={s}
+              className="flex items-center gap-1.5 bg-bone/5 px-2 py-0.5 font-mono text-[9px] tracking-wider text-dust"
+            >
+              {slug && <ToolIcon tool={slug} size={11} />}
+              {s}
+            </span>
+          );
+        })}
       </div>
 
       <div className="mt-6 border-t border-bone/8 pt-4">
@@ -185,6 +207,24 @@ export default function Projects() {
         {live.map((a, i) => (
           <BigCard key={a.id} a={a} i={i} featured />
         ))}
+
+        <motion.div
+          initial={{ opacity: 0, y: 36 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="md:col-span-2"
+        >
+          <div className="mb-3 font-mono text-[9px] tracking-[0.25em] text-dust">
+            ↳ COMPLIANCE DETAIL — CONNEXPAY
+          </div>
+          <SecurityReportCard
+            tool={SECURITY_REVIEW.tool}
+            scannedSurfaces={SECURITY_REVIEW.scannedSurfaces}
+            headline={SECURITY_REVIEW.headline}
+          />
+        </motion.div>
+
         {other.map((a, i) => (
           <BigCard key={a.id} a={a} i={i} />
         ))}

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Bebas_Neue, Space_Grotesk } from "next/font/google";
+import { Bebas_Neue, Ubuntu } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -10,9 +10,10 @@ const bebas = Bebas_Neue({
   display: "swap",
 });
 
-const grotesk = Space_Grotesk({
+const ubuntu = Ubuntu({
+  weight: ["400", "500", "700"],
   subsets: ["latin"],
-  variable: "--font-grotesk",
+  variable: "--font-ubuntu",
   display: "swap",
 });
 
@@ -88,7 +89,7 @@ export default function RootLayout({
     // That diff is external noise — never our content — so don't warn on it.
     <html
       lang="en"
-      className={`bg-void ${bebas.variable} ${grotesk.variable} ${operatorMono.variable}`}
+      className={`bg-void ${bebas.variable} ${ubuntu.variable} ${operatorMono.variable}`}
       suppressHydrationWarning
     >
       <body className="antialiased" suppressHydrationWarning>

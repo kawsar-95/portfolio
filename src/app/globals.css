@@ -15,7 +15,7 @@
   --color-danger: #ef4444;
 
   --font-display: var(--font-bebas), sans-serif;
-  --font-body: var(--font-grotesk), sans-serif;
+  --font-body: var(--font-ubuntu), sans-serif;
   --font-mono: var(--font-operator-mono), monospace;
 
   --animate-marquee: marquee 40s linear infinite;
@@ -260,6 +260,73 @@ body {
     rgba(52, 211, 153, 0.09),
     transparent 45%
   );
+}
+
+/* ---------- Pipeline gate ---------- */
+
+.gate-connector {
+  height: 1px;
+  background: var(--color-faint);
+}
+.gate-connector.done {
+  background: var(--color-go);
+}
+.gate-connector.active {
+  background: var(--color-amber);
+}
+
+/* ---------- Security severity ---------- */
+
+.severity-critical {
+  color: var(--color-danger);
+  border-color: color-mix(in srgb, var(--color-danger) 40%, transparent);
+}
+.severity-high {
+  color: var(--color-ember);
+  border-color: color-mix(in srgb, var(--color-ember) 40%, transparent);
+}
+.severity-medium {
+  color: var(--color-amber);
+  border-color: color-mix(in srgb, var(--color-amber) 40%, transparent);
+}
+.severity-low {
+  color: var(--color-dust);
+  border-color: color-mix(in srgb, var(--color-dust) 40%, transparent);
+}
+
+/* ---------- Coverage ring ---------- */
+
+@keyframes ringFill {
+  from { stroke-dashoffset: var(--ring-circumference); }
+  to { stroke-dashoffset: var(--ring-offset); }
+}
+.ring-progress {
+  animation: ringFill 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-play-state: paused;
+}
+.ring-progress.in-view {
+  animation-play-state: running;
+}
+
+/* ---------- Metric badge ---------- */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border: 1px solid rgba(232, 230, 225, 0.1);
+}
+.badge-label {
+  background: rgba(232, 230, 225, 0.05);
+  color: var(--color-dust);
+  padding: 0.25rem 0.5rem;
+}
+.badge-value {
+  padding: 0.25rem 0.5rem;
+  border-left: 1px solid rgba(232, 230, 225, 0.1);
 }
 
 /* ---------- Reduced motion ---------- */

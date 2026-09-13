@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import SectionTitle from "@/components/SectionTitle";
-import { IDENTITY } from "@/lib/data";
+import StatusDot from "@/components/StatusDot";
+import { IDENTITY, PIPELINE_GATE_STEPS, SECURITY_REVIEW } from "@/lib/data";
 
 type LineKind = "in" | "out" | "ok" | "err" | "dim" | "amber";
 interface Line {
@@ -25,6 +26,7 @@ const HELP = [
   L("out", "  experience    QA career history"),
   L("out", "  projects      case-study registry"),
   L("out", "  run-tests     execute the regression suite"),
+  L("out", "  pipeline      view the release gate"),
   L("out", "  uptime        how long you've been in the tesseract"),
   L("out", "  contact       open a channel"),
   L("out", "  clear         purge the scrollback"),
@@ -90,6 +92,7 @@ export default function TerminalSection({ bootedAt }: { bootedAt: number | null 
       setTimeout(() => {
         push(
           L("ok", "✓ 214 passed, 0 failed — suite green."),
+          L("ok", `✓ security review: ${SECURITY_REVIEW.headline.toLowerCase()}`),
           L("amber", "  You just did my job. How did it feel?"),
           L("dim", "  — that feeling is why I chose QA.")
         );
@@ -174,6 +177,18 @@ export default function TerminalSection({ bootedAt }: { bootedAt: number | null 
         } else {
           runTests();
         }
+        break;
+      case "pipeline":
+        push(
+          L("amber", "RELEASE GATE:"),
+          ...PIPELINE_GATE_STEPS.map((s) =>
+            L(
+              s.status === "pass" ? "ok" : "out",
+              `  ${s.status === "pass" ? "✓" : "○"} ${s.label.padEnd(16, " ")} ${s.detail ?? ""}`
+            )
+          ),
+          L("dim", "  full manifest in ACT III — scroll up.")
+        );
         break;
       case "sudo":
         push(
@@ -274,7 +289,7 @@ export default function TerminalSection({ bootedAt }: { bootedAt: number | null 
             {PROMPT}: ~ — ssh — 80×24
           </span>
           <span className="flex items-center gap-1.5 font-mono text-[9px] tracking-[0.2em] text-go">
-            <span className="h-1.5 w-1.5 animate-pulse-soft rounded-full bg-go" />
+            <StatusDot tone="go" pulse />
             CONNECTED
           </span>
         </div>

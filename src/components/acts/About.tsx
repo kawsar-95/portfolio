@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import SectionTitle from "@/components/SectionTitle";
+import StatusDot from "@/components/StatusDot";
 import { STATS } from "@/lib/data";
 
 const EASE = [0.22, 1, 0.36, 1] as [number, number, number, number];
@@ -125,7 +126,7 @@ export default function About() {
               COVERAGE BOARD — LIVE FROM THE SPRINT
             </span>
             <span className="flex shrink-0 items-center gap-1.5 font-mono text-[9px] tracking-[0.2em] text-go">
-              <span className="h-1.5 w-1.5 animate-pulse-soft rounded-full bg-go" />
+              <StatusDot tone="go" pulse />
               NOMINAL
             </span>
           </div>
@@ -146,8 +147,8 @@ export default function About() {
                 <div className="mt-2 font-mono text-[9px] leading-relaxed tracking-[0.15em] text-dust md:text-[10px]">
                   {stat.label}
                 </div>
-                <div className="mt-1.5 font-mono text-[9px] tracking-[0.3em] text-faint">
-                  [{stat.mono}]
+                <div className="mt-1.5 inline-block border border-faint/30 bg-faint/10 px-1.5 py-0.5 font-mono text-[9px] tracking-[0.3em] text-faint">
+                  {stat.mono}
                 </div>
               </motion.div>
             ))}

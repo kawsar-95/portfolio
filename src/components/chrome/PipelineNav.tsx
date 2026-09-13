@@ -98,7 +98,7 @@ export default function PipelineNav({ bootedAt }: { bootedAt: number | null }) {
             >
               <span
                 className={`font-mono text-[8px] tracking-[0.2em] transition-colors duration-300 ${
-                  isActive ? "text-amber" : reached ? "text-dust" : "text-faint"
+                  isActive ? "text-amber" : reached ? "text-go/70" : "text-faint"
                 }`}
               >
                 {String(i + 1).padStart(2, "0")}
@@ -108,7 +108,7 @@ export default function PipelineNav({ bootedAt }: { bootedAt: number | null }) {
                   isActive
                     ? "w-10 bg-amber"
                     : reached
-                      ? "w-5 bg-dust group-hover:w-8 group-hover:bg-amber/60"
+                      ? "w-5 bg-go/60 group-hover:w-8 group-hover:bg-amber/60"
                       : "w-5 bg-faint group-hover:w-8"
                 }`}
               />

@@ -2,7 +2,9 @@
 
 import { motion } from "framer-motion";
 import SectionTitle from "@/components/SectionTitle";
-import { SKILL_LAYERS } from "@/lib/data";
+import ToolIcon, { slugifyTool } from "@/components/ToolIcon";
+import PipelineGate from "@/components/devsecops/PipelineGate";
+import { SKILL_LAYERS, PIPELINE_GATE_STEPS } from "@/lib/data";
 
 /**
  * ACT III — CASE. Skills the way a QA engineer actually stores them:
@@ -61,14 +63,18 @@ export default function Skills() {
                     </span>
                   </div>
                   <div className="mt-3 flex flex-wrap gap-2 pl-7 md:pl-11">
-                    {layer.items.map((item) => (
-                      <span
-                        key={item}
-                        className="border border-bone/10 px-2.5 py-1 font-mono text-[10px] tracking-wider text-dust transition-colors duration-300 group-hover:border-amber/25 group-hover:text-bone/80 md:text-[11px]"
-                      >
-                        {item}
-                      </span>
-                    ))}
+                    {layer.items.map((item) => {
+                      const slug = slugifyTool(item);
+                      return (
+                        <span
+                          key={item}
+                          className="flex items-center gap-1.5 border border-bone/10 px-2.5 py-1 font-mono text-[10px] tracking-wider text-dust transition-colors duration-300 group-hover:border-amber/25 group-hover:text-bone/80 md:text-[11px]"
+                        >
+                          {slug && <ToolIcon tool={slug} size={12} />}
+                          {item}
+                        </span>
+                      );
+                    })}
                   </div>
                 </motion.div>
               );
@@ -95,6 +101,16 @@ export default function Skills() {
             </motion.div>
           </div>
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className="mt-8"
+        >
+          <PipelineGate title="~/kawsar/ci — release gate" steps={PIPELINE_GATE_STEPS} />
+        </motion.div>
       </div>
     </section>
   );
